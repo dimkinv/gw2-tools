@@ -28,7 +28,7 @@ function analyzeResults(listings: Listing[], items: { [id: string]: Item | undef
     console.log('initiating listing analysis');
 
     for (const listing of listings) {
-        if (listing.sells.length > 1) {
+        if (listing.sells.length > 1 && items[listing.id]?.type === ItemType.CraftingMaterial) {
             const diff = 100 - (listing.sells[0].unit_price / listing.sells[1].unit_price * 100);
             if (diff > 50) {
                 console.log(`found high sell difference for item "${items[listing.id]?.name ?? listing.id}" first order is ${listing.sells[0].unit_price}, second is ${listing.sells[1].unit_price}`);
@@ -117,6 +117,28 @@ interface Listing {
 interface Item {
     id: string;
     name: string;
-    type: string;
+    type: ItemType;
     icon: string;
+}
+
+
+enum ItemType {
+    Armor = 'Armor',
+    Back = 'Back',
+    Bag = 'Bags',
+    Consumable = 'Consumable',
+    Container = 'Container',
+    CraftingMaterial = 'CraftingMaterial',
+    Gathering = 'Gathering',
+    Gizmo = 'Gizmo',
+    JadeTechModule = 'JadeTechModule',
+    Key = 'Key',
+    MiniPet = 'MiniPet',
+    PowerCore = 'PowerCore',
+    Tool = 'Tool',
+    Trait = 'Trait',
+    Trinket = 'Trinket',
+    Trophy = 'Trophy',
+    UpgradeComponent = 'UpgradeComponent',
+    Weapon = 'Weapon'
 }
