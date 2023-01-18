@@ -1,5 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { createErrorOrResponse, ErrorOrResponse } from "./either";
+import { Listing } from "./listing.model";
 import { logger } from "./logger";
 
 export async function getResourcesListByEndpoint<T>(apiEndpoint: string): Promise<ErrorOrResponse<T[]>> {
@@ -11,11 +12,25 @@ export async function getResourcesListByEndpoint<T>(apiEndpoint: string): Promis
         return ids;
     }
 
-    const items = await getItemsForIds<T>(ids.response, apiEndpoint);
+    const items = await getItemsForIdsByBatches<T>(ids.response, apiEndpoint);
     return items;
 }
 
-async function getItemsForIds<T>(ids: number[], apiEndpoint: string): Promise<ErrorOrResponse<T[]>> {
+export async function getItemsForIds<T>(endpoint: string, idsBulks: number[][]): Promise<ErrorOrResponse<T[]>[]> {
+    logger.debug(`gw2-api::getItemsForIds: initiating bulk requests for endpoint ${endpoint}, creating ${idsBulks.length} requests`);
+    const requestsUrls = idsBulks.map(ids => `${endpoint}?ids=${ids.join(',')}`);
+    const requests = requestsUrls.map(requestUrl => axios.get<T[]>(requestUrl));
+
+    const responses = await Promise.allSettled(requests);
+    logger.debug(`gw2-api::getItemsForIds: finished bulk requests for endpoint ${endpoint}`);
+    return responses.map<ErrorOrResponse<T[]>>(response => response.status === 'fulfilled' ?
+        createErrorOrResponse(response.value.data) :
+        createErrorOrResponse<T[]>(response.reason)
+    );
+}
+
+
+async function getItemsForIdsByBatches<T>(ids: number[], apiEndpoint: string): Promise<ErrorOrResponse<T[]>> {
     logger.debug(`gw2-api::getItemsForIds: fetching items for ${ids.length} ids for endpoint  ${apiEndpoint}`)
     const groups: number[][] = [];
 
@@ -43,7 +58,7 @@ async function getItemsForIds<T>(ids: number[], apiEndpoint: string): Promise<Er
     return createErrorOrResponse(items);
 }
 
-async function getIdsForEndpoint(endpoint: string): Promise<ErrorOrResponse<number[]>> {
+export async function getIdsForEndpoint(endpoint: string): Promise<ErrorOrResponse<number[]>> {
     try {
         logger.debug(`gw2-api::getIdsForEndpoint: fetching ids for endpoint ${endpoint}`);
         const response = await axios.get<number[]>(endpoint);
