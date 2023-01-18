@@ -9,13 +9,9 @@ const apiKey = 'A563377B-C3B0-8D4F-8FC7-009D7F41204B24220EB4-192D-4A5C-A977-2466
 
 async function main() {
     await persistence.init();
-    logger.debug('main::main: reading items file from disk');
-    const items = JSON.parse(fs.readFileSync(path.join(__dirname, 'items.json'), 'utf8')) as { [id: string]: Item | undefined };
-    logger.debug('main::main: done reading items');
-
     logger.debug('main::main: initiating first get on listings');
 
-    // fetchAndSaveListings();
+    fetchAndSaveListings();
 
     // const listings = await getResourcesListByEndpoint<Listing>(ordersListings);
     // if (listings.isError) {

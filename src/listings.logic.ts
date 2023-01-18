@@ -1,3 +1,4 @@
+import { analyzeListings } from "./analyzer";
 import { ErrorOrResponse, Response } from "./either";
 import { getIdsForEndpoint, getItemsForIds } from "./gw2-api";
 import { Listing } from "./listing.model";
@@ -25,19 +26,20 @@ export async function fetchAndSaveListings() {
 
     let i = 0;
     while (chunks.length > 0) {
-        const listings = await getItemsForIds<Listing>(listingsEndpoint, chunks.splice(0, 10));
+        const listingsChunks = await getItemsForIds<Listing>(listingsEndpoint, chunks.splice(0, 10));
         logger.debug(`listings.logic::fetchAndDaveListings: fetched chunks ${i * 10}-${i * 10 + 10}`);
         i++;
 
-        const isErrors = listings.some(listing => listing.isError);
+        const isErrors = listingsChunks.some(listing => listing.isError);
         if (isErrors) {
             logger.warn(`listings.logic::fetchAndDaveListings: some listing requests returned an error skipping them`);
         }
 
-        const successfulListings = listings.filter(isSuccessfullListing);
+        const successfulListingsChunks = listingsChunks.filter(isSuccessfullListing);
         const date = new Date().toISOString();
-        for (const listing of successfulListings) {
-            insertManyListingsHistoryRecord(listing.response.map<ListingHistoryRecord>(listing => ({
+        for (const listingChunk of successfulListingsChunks) {
+            analyzeListings(listingChunk.response);
+            insertManyListingsHistoryRecord(listingChunk.response.map<ListingHistoryRecord>(listing => ({
                 itemId: listing.id,
                 listing,
                 date
