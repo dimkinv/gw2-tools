@@ -36,42 +36,10 @@ async function main() {
         listing
     })));
     
-    // analyzeResults(listings, items);
 }
 
-// function analyzeResults(listings: Listing[], items: { [id: string]: Item | undefined }) {
-//     console.log('initiating listing analysis');
-
-//     for (const listing of listings) {
-//         if (listing.sells.length > 1 && items[listing.id]?.type === ItemType.CraftingMaterial) {
-//             const diff = 100 - (listing.sells[0].unit_price / listing.sells[1].unit_price * 100);
-//             if (diff > 50) {
-//                 console.log(`found high sell difference for item "${items[listing.id]?.name ?? listing.id}" first order is ${listing.sells[0].unit_price}, second is ${listing.sells[1].unit_price}`);
-//             }
-//         }
-//     }
-// }
-
-// async function updateItems() {
-//     const ids = await getIdsForEndpoint(itemsEndpoint);
-//     const items = await getItemsForIds<Item>(ids, itemsEndpoint);
-
-//     const mappedItems: { [is: string]: Item } = {};
-//     for (const item of items) {
-//         mappedItems[item.id] = {
-//             icon: item.icon,
-//             id: item.id,
-//             name: item.name,
-//             type: item.type
-//         }
-//     }
-
-//     fs.writeFileSync(path.join(__dirname, 'item.json'), JSON.stringify(mappedItems));
-// }
 
 
 
 
 main();
-// updateItems();
-
