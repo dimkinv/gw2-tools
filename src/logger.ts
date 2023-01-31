@@ -5,7 +5,7 @@ export const logger = winston.createLogger({
         winston.format.colorize(),    
         winston.format.simple(),
     ),
-    level: 'debug',
+    level: process.env.LOG_LEVEL ?? 'debug',
     transports: [
         new winston.transports.Console()
     ]

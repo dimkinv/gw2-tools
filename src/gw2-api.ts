@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { createErrorOrResponse, ErrorOrResponse } from "./either";
-import { Listing } from "./listing.model";
+import { Listing } from "./models/listing.model";
 import { logger } from "./logger";
 
 export async function getResourcesListByEndpoint<T>(apiEndpoint: string): Promise<ErrorOrResponse<T[]>> {
@@ -65,7 +65,7 @@ export async function getIdsForEndpoint(endpoint: string): Promise<ErrorOrRespon
         return createErrorOrResponse(response.data);
     } catch (error) {
         const e = error as AxiosError;
-        logger.error(`gw2-api::getIdsForEndpoint: error fetching ids for endpoint ${endpoint} with error: ${e.message}`);
+        logger.error(`gw2-api::getIdsForEndpoint: error fetching ids for endpoint ${endpoint} status: ${e.response?.status}, response: ${e.response?.data}`);
         return createErrorOrResponse<number[]>(e);
     }
 }

@@ -1,5 +1,5 @@
 import { getItems } from "./items.logic";
-import { Listing } from "./listing.model";
+import { Listing } from "./models/listing.model";
 
 export function analyzeListings(listings: Listing[]) {
     const items = getItems();

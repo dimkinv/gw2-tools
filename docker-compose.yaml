@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  mongo-service:
+    image: mongo:4.4.9-focal
+    ports:
+      - 27017:27017
+    restart: always
+  gw2-tools:
+    depends_on: 
+      - mongo-service
+    image: gw2-tools
+    environment: 
+      - MONGO_CONNECTION_STRING=mongodb://mongo-service:27017
+      - LOG_LEVEL=silly
+    

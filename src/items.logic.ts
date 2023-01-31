@@ -1,4 +1,4 @@
-import { Item } from "./listing.model";
+import { Item } from "./models/listing.model";
 import { logger } from "./logger";
 import fs from 'fs';
 import path from 'path';

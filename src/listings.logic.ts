@@ -1,7 +1,7 @@
 import { analyzeListings } from "./analyzer";
 import { ErrorOrResponse, Response } from "./either";
 import { getIdsForEndpoint, getItemsForIds } from "./gw2-api";
-import { Listing } from "./listing.model";
+import { Listing } from "./models/listing.model";
 import { logger } from "./logger";
 import { insertManyListingsHistoryRecord, ListingHistoryRecord } from "./persistence";
 import { listingsEndpoint } from "./urls";
@@ -38,7 +38,6 @@ export async function fetchAndSaveListings() {
         const successfulListingsChunks = listingsChunks.filter(isSuccessfullListing);
         const date = new Date().toISOString();
         for (const listingChunk of successfulListingsChunks) {
-            analyzeListings(listingChunk.response);
             insertManyListingsHistoryRecord(listingChunk.response.map<ListingHistoryRecord>(listing => ({
                 itemId: listing.id,
                 listing,
