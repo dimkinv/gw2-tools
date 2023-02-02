@@ -5,6 +5,7 @@ import { fetchAndSaveListings } from './listings.logic';
 import { logger } from './logger';
 import * as persistence from './persistence';
 import { getAndSaveMixMaxPricesForItems } from './prices.logic';
+import { initPricesLoop } from './prices-fetcher';
 
 const apiKey = 'A563377B-C3B0-8D4F-8FC7-009D7F41204B24220EB4-192D-4A5C-A977-2466782AAEF6';
 
@@ -14,7 +15,7 @@ async function main() {
 
     // await fetchAndSaveListings();
 
-    await getAndSaveMixMaxPricesForItems();
+    initPricesLoop();
 
     await persistence.close();
 }

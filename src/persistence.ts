@@ -23,6 +23,7 @@ export async function init() {
     try {
         logger.debug(`persistence::root: mongodb connectionstring: ${connectionString}`);
         client = await MongoClient.connect(connectionString);
+        await client.connect();
         logger.debug(`persistence::init: connected to DB at ${connectionString}`);
         db = client.db('gw2');
         listingsCollection = db.collection('listingsHistory');
